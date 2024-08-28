@@ -51,6 +51,7 @@ input[type="text"], input[type="email"], input[type="tel"] {
     margin-top: 20px;
 }
 
+
 .thank-you-button {
     padding: 10px 20px;
     font-size: 16px;
@@ -64,3 +65,5 @@ input[type="text"], input[type="email"], input[type="tel"] {
 .thank-you-button:hover {
     background-color: #005ea6;
 }
+
+
