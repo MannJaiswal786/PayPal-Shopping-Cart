@@ -7,6 +7,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
+app.use(express.static(__dirname));
 
 const PAYPAL_CLIENT_ID = 'ARfLHOvowzuMOtmoxHZbzikVl4M1tot7r2OY8uPlcofGYKRlCSZrytxcQJ4zLhskxW8ZMiJO3xL0QMtI';
 const PAYPAL_CLIENT_SECRET = 'ECwzwk7CF72Qdm6VNKCbzZFK7NKtdjgk4s5JLNxk8pAbLsXgoECnFwXArBAsFvD5iM57vcrONOn-i3bx';
