@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <script src="https://www.paypal.com/sdk/js?client-id=ARfLHOvowzuMOtmoxHZbzikVl4M1tot7r2OY8uPlcofGYKRlCSZrytxcQJ4zLhskxW8ZMiJO3xL0QMtI"></script>
+</head>
+<body>
+    <h1>Shopping Cart</h1>
+    <div id="product">
+        <p>Product Name: PayPal T-Shirt</p>
+        <p>Item Number: 8302024</p>
+        <p>Price: $39.99</p>
+    </div>
+
+    <h2>Buyer Information</h2>
+    <form id="buyer-info">
+        <label>First Name: <input type="text" name="firstName" value="John"></label><br>
+        <label>Last Name: <input type="text" name="lastName" value="Doe"></label><br>
+        <label>Email: <input type="email" name="email" value="john.doe@example.com"></label><br>
+        <label>Phone: <input type="tel" name="phone" value="555-555-5555"></label><br>
+        <label>Street: <input type="text" name="street" value="123 Main St"></label><br>
+        <label>City: <input type="text" name="city" value="Anytown"></label><br>
+        <label>State: <input type="text" name="state" value="CA"></label><br>
+        <label>Zip: <input type="text" name="zip" value="90210"></label><br>
+        <label>Country: <input type="text" name="country" value="US"></label><br>
+    </form>
+
+    <div id="paypal-button-container"></div>
+
+    <script>
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                const buyerInfo = {
+                firstName: document.querySelector('input[name="firstName"]').value,
+                lastName: document.querySelector('input[name="lastName"]').value,
+                email: document.querySelector('input[name="email"]').value,
+                phone: document.querySelector('input[name="phone"]').value,
+                street: document.querySelector('input[name="street"]').value,
+                city: document.querySelector('input[name="city"]').value,
+                state: document.querySelector('input[name="state"]').value,
+                zip: document.querySelector('input[name="zip"]').value,
+                country: document.querySelector('input[name="country"]').value
+            };
+                return fetch('/create-order', {
+                    method: 'post',
+                }).then(function(res) {
+                    return res.json();
+                }).then(function(orderData) {
+                    return orderData.orderID;
+                });
+            },
+            onApprove: function(data, actions) {
+                return fetch('/capture-order', {
+                    method: 'post',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        orderID: data.orderID
+                    })
+                }).then(function(res) {
+                    return res.json();
+                }).then(function(orderData) {
+                    window.location.href = "/thank-you?transactionId=" + orderData.captureID;
+                });
+            }
+        }).render('#paypal-button-container');
+    </script>
+</body>
+</html>
