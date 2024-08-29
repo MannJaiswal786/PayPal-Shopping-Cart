@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mann's Shopping Cart</title>
+    <!-- Link to external stylesheet for styling the page -->
     <link rel="stylesheet" href="/styles.css">
+    <!-- PayPal SDK script with the client ID for integrating PayPal buttons -->
     <script src="https://www.paypal.com/sdk/js?client-id=ARfLHOvowzuMOtmoxHZbzikVl4M1tot7r2OY8uPlcofGYKRlCSZrytxcQJ4zLhskxW8ZMiJO3xL0QMtI"></script>
 </head>
 <body>
+    <!-- Header for the shopping cart page -->
     <h1> Mann's PayPal Shopping Cart</h1>
+    <!-- Product section displaying the product image and details -->
     <div id="product">
         <img src="/images/paypal.jpg" alt="Product Image" style="width: 300px; height: auto; border-radius: 8px;">
         <p>Product Name: PayPal T-Shirt</p>
@@ -16,8 +20,10 @@
         <p>Price: $39.99</p>
     </div>
 
+<!-- Form for collecting buyer's information -->
     <h2>Buyer Information</h2>
     <form id="buyer-info">
+        <!-- Input fields for the buyer's personal details -->
         <label>First Name: <input type="text" name="firstName" value="John"></label><br>
         <label>Last Name: <input type="text" name="lastName" value="Doe"></label><br>
         <label>Email: <input type="email" name="email" value="john.doe@example.com"></label><br>
@@ -29,11 +35,15 @@
         <label>Country: <input type="text" name="country" value="US"></label><br>
     </form>
 
+<!-- Container for rendering the PayPal button -->
         <div id="paypal-button-container"></div>
    
     <script>
+        // PayPal Buttons configuration for ACDC
         paypal.Buttons({
+            // Function to create an order when the PayPal button is clicked
             createOrder: function(data, actions) {
+                // Gather buyer information from the form inputs
                 const buyerInfo = {
                 firstName: document.querySelector('input[name="firstName"]').value,
                 lastName: document.querySelector('input[name="lastName"]').value,
@@ -45,30 +55,35 @@
                 zip: document.querySelector('input[name="zip"]').value,
                 country: document.querySelector('input[name="country"]').value
             };
+            // Send a POST request to the server to create the order
                 return fetch('/create-order', {
                     method: 'post',
                 }).then(function(res) {
                     return res.json();
                 }).then(function(orderData) {
+                    // Return the order ID received from the server
                     return orderData.orderID;
                 });
             },
+            // Function to capture the order once it has been approved
             onApprove: function(data, actions) {
+                // Send a POST request to the server to capture the order
                 return fetch('/capture-order', {
                     method: 'post',
                     headers: {
                         'content-type': 'application/json'
                     },
                     body: JSON.stringify({
-                        orderID: data.orderID
+                        orderID: data.orderID // Include the order ID in the request body
                     })
                 }).then(function(res) {
                     return res.json();
                 }).then(function(orderData) {
+                     // Redirect to the 'Thank You' page with the transaction ID in the URL
                     window.location.href = "/thank-you?transactionId=" + orderData.captureID;
                 });
             }
-        }).render('#paypal-button-container');
+        }).render('#paypal-button-container'); // Render the PayPal button in the specified container
     </script>
 </body>
 </html>
